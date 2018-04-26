@@ -14,11 +14,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -133,7 +131,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         boolean valid = true;
 
         String email = mEmailField.getText().toString();
-        if (TextUtils.isEmpty(email) && mEmailField.getText().toString().contains("@")) {
+        if (TextUtils.isEmpty(email) || mEmailField.getText().toString().contains("@")) {
             mEmailField.setError("Required.");
             valid = false;
         } else {
@@ -165,34 +163,30 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
             // [START create_user_with_email]
             mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Timber.d("createUserWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
-                                show("Account Created", false);
-                                signIn(email, password);
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Timber.d("createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                            show("Account Created", false);
                             } else {
-                                // If sign in fails, display a message to the user.
-                                Timber.d("createUserWithEmail:failure");
-                                Timber.e(task.getException());
-                                show("Sign Up Failed.", false);
-                                updateUI(null);
-                            }
-
-                            // [START_EXCLUDE]
-                            hideLoading();
-                            // [END_EXCLUDE]
+                            // If sign in fails, display a message to the user.
+                            Timber.d("createUserWithEmail:failure");
+                            Timber.e(task.getException());
+                            show("Sign Up Failed.", false);
+                            updateUI(null);
                         }
+
+                        // [START_EXCLUDE]
+                        hideLoading();
+                        // [END_EXCLUDE]
                     });
             // [END create_user_with_email]
         }
     }
 
-    private void signIn(String email, String password) {
+    private void trySignIn(String email, String password) {
         Timber.d("signIn:" + email);
         if (validateForm()) {
             showLoading();
@@ -208,9 +202,15 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
                         } else {
                             // If sign in fails, display a message to the user.
                             Timber.d("signInWithEmail:failure");
-                            Timber.e(task.getException());
-                            show("Authentication failed.", false);
-                            updateUI(null);
+                            if (task.getException() != null && task.getException().getMessage()
+                                    .equalsIgnoreCase("There is no user record corresponding" +
+                                            " to this identifier. The user may have been deleted.")) {
+                                createAccount(email, password);
+                                Timber.e(task.getException());
+                            } else {
+                                show("Authentication failed.", false);
+                                updateUI(null);
+                            }
                         }
 
                         // [START_EXCLUDE]
@@ -233,14 +233,20 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @OnClick(R.id.login_with_google)
     public void onLoginGoogleClicked(View v) {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-        showLoading();
+        if (AppUtils.hasInternetConnection(this)) {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+            showLoading();
+        } else
+            show("Please connect to the internet", false);
     }
 
     @OnClick(R.id.login_with_email)
     public void onLoginEmailClicked(View v) {
-        createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+        if (AppUtils.hasInternetConnection(this))
+            trySignIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+        else
+            show("Please connect to the internet", false);
     }
 
     @OnClick(R.id.logout)
