@@ -15,7 +15,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class LoginPresenter<V extends LoginMvpView> extends BasePresenter<V> implements LoginMvpContract<V> {
 
     @Inject
-    public LoginPresenter(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
+    LoginPresenter(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable) {
         super(dataManager, schedulerProvider, compositeDisposable);
     }
 

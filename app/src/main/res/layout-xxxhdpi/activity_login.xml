@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     tools:context="com.rtukpe.fixtrs.ui.login.LoginActivity">
 
     <RelativeLayout
@@ -13,11 +13,60 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.CardView
+            android:id="@+id/logout.view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="32dp"
+            android:visibility="gone"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.lb.auto_fit_textview.AutoResizeTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:padding="8dp"
+                    android:text="@string/logged_in"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="12dp"
+                    android:text="@string/logout"
+                    android:textColor="@color/gray"
+                    android:textSize="18sp"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
             android:id="@+id/login.view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_margin="32dp"
+            android:visibility="visible"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp">
 
@@ -63,6 +112,7 @@
                             app:srcCompat="@drawable/account"/>
 
                         <EditText
+                            android:id="@+id/login.email"
                             style="@style/FullWidthEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -104,6 +154,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/login.with.email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -121,9 +172,8 @@
 
                 </LinearLayout>
 
-
                 <com.shobhitpuri.custombuttons.GoogleSignInButton
-                    android:id="@+id/login.google"
+                    android:id="@+id/login.with.google"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/email.login.section"
@@ -135,6 +185,7 @@
                     android:foreground="?android:attr/selectableItemBackground"/>
 
             </RelativeLayout>
+
         </android.support.v7.widget.CardView>
 
     </RelativeLayout>
