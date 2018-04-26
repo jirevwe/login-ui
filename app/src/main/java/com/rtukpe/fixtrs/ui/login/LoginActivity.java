@@ -131,7 +131,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         boolean valid = true;
 
         String email = mEmailField.getText().toString();
-        if (TextUtils.isEmpty(email) || mEmailField.getText().toString().contains("@")) {
+        if (TextUtils.isEmpty(email) || !email.contains("@")) {
             mEmailField.setError("Required.");
             valid = false;
         } else {
@@ -161,7 +161,6 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         if (validateForm()) {
             showLoading();
 
-            // [START create_user_with_email]
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
@@ -170,7 +169,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             show("Account Created", false);
-                            } else {
+                        } else {
                             // If sign in fails, display a message to the user.
                             Timber.d("createUserWithEmail:failure");
                             Timber.e(task.getException());
@@ -178,11 +177,8 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
                             updateUI(null);
                         }
 
-                        // [START_EXCLUDE]
                         hideLoading();
-                        // [END_EXCLUDE]
                     });
-            // [END create_user_with_email]
         }
     }
 
@@ -191,7 +187,6 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
         if (validateForm()) {
             showLoading();
 
-            // [START sign_in_with_email]
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
@@ -212,15 +207,8 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
                                 updateUI(null);
                             }
                         }
-
-                        // [START_EXCLUDE]
-                        if (!task.isSuccessful()) {
-                            show("Sign In failed.", false);
-                        }
                         hideLoading();
-                        // [END_EXCLUDE]
                     });
-            // [END sign_in_with_email]
         }
     }
 
@@ -233,7 +221,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @OnClick(R.id.login_with_google)
     public void onLoginGoogleClicked(View v) {
-        if (AppUtils.hasInternetConnection(this)) {
+        if (AppUtils.hasInternetConnection(this) && AppUtils.checkPlayServices(this)) {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
             showLoading();
@@ -243,7 +231,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @OnClick(R.id.login_with_email)
     public void onLoginEmailClicked(View v) {
-        if (AppUtils.hasInternetConnection(this))
+        if (AppUtils.hasInternetConnection(this) && AppUtils.checkPlayServices(this))
             trySignIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
         else
             show("Please connect to the internet", false);
