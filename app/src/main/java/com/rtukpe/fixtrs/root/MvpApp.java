@@ -1,10 +1,10 @@
 package com.rtukpe.fixtrs.root;
 
-
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.google.firebase.FirebaseApp;
 import com.rtukpe.fixtrs.R;
 import com.rtukpe.fixtrs.di.component.ApplicationComponent;
 import com.rtukpe.fixtrs.di.component.DaggerApplicationComponent;
@@ -32,6 +32,7 @@ public class MvpApp extends Application {
 
         //App logger
         AppLogger.init();
+        FirebaseApp.initializeApp(this);
         Twitter.initialize(this);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()

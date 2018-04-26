@@ -1,5 +1,10 @@
 <resources>
-    <string name="some_error">Some Error</string>
     <string name="com.twitter.sdk.android.CONSUMER_KEY">3LsFvfQT2l8Lwt0EcUCzaPdjG</string>
-    <string name="com.twitter.sdk.android.CONSUMER_SECRET">	5tV1JVIKlDQm5dEpKC7lwhVL3i2yo41BBokIaaSQKAjwpBPPU5</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">5tV1JVIKlDQm5dEpKC7lwhVL3i2yo41BBokIaaSQKAjwpBPPU5</string>
+    <string name="background">background</string>
+    <string name="login">Login</string>
+    <string name="some_error">Some Error</string>
+    <string name="login_text">Login to access the latest football scores</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
 </resources>
